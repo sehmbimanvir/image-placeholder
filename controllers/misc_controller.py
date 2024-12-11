@@ -54,7 +54,10 @@ def get_currency_inr():
     return jsonify({
         'data': {
             'currencies': data,
-            'gold1': finals[4]
+            'gold1': {
+                value: finals[4],
+                image: 'https://cdn-icons-png.flaticon.com/512/9590/9590147.png'
+            }
         }
     })
     
