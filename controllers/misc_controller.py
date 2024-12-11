@@ -44,12 +44,17 @@ def search_rate(sources):
 
 misc_controller = Blueprint('misc_controller', __name__)
 
-@misc_controller.route('/currency')
+@misc_controller.route('/scriptable')
 def get_currency_inr():
-    res = search_rate(list(currencies.keys()))
+    data = search_rate(list(currencies.keys()))
+    response = requests.get('http://bcast.classicbullion.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/classic')
+    parts = response.text.split('\n')
+    gold1gm = next((item for item in parts if "GOLD 1 GM" in item), None)
+    finals = gold1gm.split('\t')
     return jsonify({
         'data': {
-            'currencies': res
+            'currencies': data,
+            'gold1': finals[4]
         }
     })
     
