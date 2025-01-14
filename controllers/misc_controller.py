@@ -9,20 +9,19 @@ currencies = {
     'GBP': 'GB'
 }
 
-def fetch(params):
-    base_url = 'https://www.google.com/search'
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
-    }
-    response = requests.get(base_url, params=params, headers=headers)
-    return response.text
+def fetch(currency):
+    base_url = 'https://api.vance.club/forex/rates-v2/' + currency + '/INR'
+    print(base_url)
+    # headers = {
+    #     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+    # }
+    response = requests.get(base_url)
+    return response.json()
 
 def search_rate(sources):
     queries = []
     for source in sources:
-        queries.append({
-            "q": f"{source} in INR",
-        })
+        queries.append(source)
     
     
     # Execute in parallel
@@ -32,11 +31,11 @@ def search_rate(sources):
     # Print results
     res = {}
     for index, item in enumerate(results):
-        soup = BeautifulSoup(item, 'html.parser')
-        div = soup.find('div', attrs={'data-exchange-rate': True})
+        # soup = BeautifulSoup(item, 'html.parser')
+        # div = soup.find('div', attrs={'data-exchange-rate': True})
         source_index = sources[index]
         res[source_index] = {
-            'value': div['data-exchange-rate'],
+            'value': item['rate'],
             'flag': f"https://flagsapi.com/{currencies[source_index]}/flat/64.png"
         }
 
